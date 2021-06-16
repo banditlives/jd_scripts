@@ -1,5 +1,5 @@
 /*
-东东超市兑换奖品 脚本地址：https://gitee.com/lxk0301/jd_scripts/raw/master/jd_blueCoin.js
+《修改版：东东超市兑换实物奖品》其他注释不管；脚本地址：https://gitee.com/lxk0301/jd_scripts/raw/master/jd_blueCoin.js
 感谢@yangtingxiao提供PR
 更新时间：2021-6-7
 活动入口：京东APP我的-更多工具-东东超市
@@ -25,6 +25,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 let allMessage = '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const obtainType = 4; //0为兑换实物，兑换京豆请将此值改为4
 let coinToBeans = $.getdata('coinToBeans') || 0; //兑换多少数量的京豆（20或者1000），0表示不兑换，默认不兑换京豆，如需兑换把0改成20或者1000，或者'商品名称'(商品名称放到单引号内)即可
 let jdNotify = false;//是否开启静默运行，默认false关闭(即:奖品兑换成功后会发出通知提示)
 //IOS等用户直接用NobyDa的jd cookie
@@ -182,7 +183,7 @@ async function PrizeIndex() {
           return ;
         }
         if ($.totalBlue > $.blueCost) {
-          if ($.type === 4 && !$.beanType) {
+          if ($.type === 2) {
             await smtg_obtainPrize(prizeId, 0, "smtg_lockMaterialPrize")
           } else {
             await smtg_obtainPrize(prizeId);
@@ -265,7 +266,7 @@ function smtg_queryPrize(timeout = 0){
             }
             if (data.data.bizCode === 0) {
               const { areas } = data.data.result;
-              const prizes = areas.filter(vo => vo['type'] === 4);
+              const prizes = areas.filter(vo => vo['type'] === obtainType);
               if (prizes && prizes[0]) {
                 $.areaId = prizes[0].areaId;
                 $.periodId = prizes[0].periodId;
